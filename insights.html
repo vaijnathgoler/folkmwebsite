@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Insights Hub — Folk Williams Financial Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--o-50:#E8F4F5;--o-100:#C5E2E5;--o-200:#9ECFD4;--o-300:#76BBC2;--o-400:#58AAB3;--o-500:#0097A7;--o-600:#00838F;--o-700:#006F7A;--o-800:#005A63;--o-900:#00464D;--o-950:#002529;--w-50:#FDFCFA;--w-100:#F7F5F0;--w-200:#F0EBE0;--w-300:#E8DFD0;--w-400:#D4C8B5;--w-500:#B5A58C;--w-600:#9A8B73;--w-700:#7A6D5A;--w-800:#5C5243;--c-900:#0D1117;--c-800:#161B22;--c-700:#4A5568;--c-600:#6B7280;--c-500:#9CA3AF;--c-400:#E5E7EB;--white:#FFFFFF;--fd:'Cormorant Garamond',Georgia,serif;--fb:'Inter',system-ui,sans-serif;--fm:'Space Grotesk',monospace;--ease:cubic-bezier(0.22,1,0.36,1);}
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+  body{font-family:var(--fb);font-size:15px;line-height:1.65;color:var(--c-900);background:var(--white);overflow-x:hidden;font-weight:400}
+  img{max-width:100%;height:auto;display:block}
+  a{text-decoration:none;color:inherit}
+  ul{list-style:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none}
+
+  .nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 48px;height:84px;display:flex;align-items:center;justify-content:space-between;transition:all 0.6s var(--ease);border-bottom:1px solid transparent;background:rgba(255,255,255,0.92);backdrop-filter:blur(24px) saturate(180%);box-shadow:0 1px 0 rgba(0,0,0,0.04)}
+  .nav.scrolled{height:72px;border-bottom-color:var(--c-400)}
+  .nav-logo{display:flex;align-items:center;gap:16px}
+  .nav-logo img{height:44px;width:auto;display:block}
+  .nav-logo span{font-family:var(--fd);font-size:26px;font-weight:500;letter-spacing:-0.01em;color:var(--c-900);line-height:1}
+  .nav-links{display:flex;align-items:center;gap:48px}
+  .nav-links a{font-family:var(--fm);font-size:12px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--c-900);padding:8px 0;position:relative;transition:color 0.3s ease}
+  .nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--o-600);transition:width 0.5s var(--ease)}
+  .nav-links a:hover{color:var(--o-700)} .nav-links a:hover::after{width:100%}
+  .nav-cta{font-family:var(--fm);font-size:12px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;padding:14px 32px;border:2px solid var(--c-900);border-radius:100px;color:var(--c-900);transition:all 0.4s var(--ease);background:transparent;line-height:1}
+  .nav-cta:hover{background:var(--c-900);color:var(--white);border-color:var(--c-900);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.12)}
+  .nav-toggle{display:none;flex-direction:column;gap:5px;padding:8px;cursor:pointer;z-index:1001}
+  .nav-toggle span{display:block;width:26px;height:2px;background:var(--c-900);transition:all 0.4s var(--ease);border-radius:1px}
+  .nav-toggle.active span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .nav-toggle.active span:nth-child(2){opacity:0;transform:scaleX(0)}
+  .nav-toggle.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+  .mob-overlay{position:fixed;inset:0;z-index:999;background:var(--w-50);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:40px;opacity:0;pointer-events:none;transition:opacity 0.5s var(--ease)}
+  .mob-overlay.active{opacity:1;pointer-events:auto}
+  .mob-overlay a{font-family:var(--fd);font-size:36px;font-weight:500;color:var(--c-900);letter-spacing:-0.01em;transition:color 0.3s}
+  .mob-overlay a:hover{color:var(--o-600)}
+  .mob-overlay .nav-cta{margin-top:20px;font-size:14px;padding:16px 40px}
+
+  .page-hero{position:relative;width:100%;padding:220px 48px 160px;background:var(--w-100);text-align:center;overflow:hidden}
+  .page-hero-glow{position:absolute;top:0;left:50%;transform:translateX(-50%);width:900px;height:500px;border-radius:50%;background:radial-gradient(ellipse,rgba(0,151,167,0.06) 0%,transparent 60%);pointer-events:none}
+  .page-hero-content{position:relative;z-index:2;max-width:900px;margin:0 auto}
+  .page-hero-label{font-family:var(--fm);font-size:12px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-600);margin-bottom:36px;display:flex;align-items:center;justify-content:center;gap:16px}
+  .page-hero-label::before,.page-hero-label::after{content:'';width:48px;height:2px;background:var(--o-400)}
+  .page-hero-title{font-family:var(--fd);font-size:clamp(52px,9vw,120px);font-weight:500;line-height:0.92;letter-spacing:-0.03em;color:var(--c-900);margin-bottom:36px;text-wrap:balance}
+  .page-hero-title em{font-style:italic;font-weight:400;color:var(--o-700)}
+  .page-hero-sub{font-family:var(--fb);font-size:clamp(15px,1.3vw,18px);font-weight:400;color:var(--c-700);max-width:620px;margin:0 auto;line-height:1.7;text-wrap:pretty}
+
+  .filter{padding:0 48px 80px;background:var(--w-100);text-align:center}
+  .filter-inner{max-width:1400px;margin:0 auto;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .filter-btn{padding:12px 28px;border-radius:100px;border:2px solid var(--w-200);background:var(--white);font-family:var(--fm);font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--c-700);cursor:pointer;transition:all 0.4s var(--ease)}
+  .filter-btn:hover{border-color:var(--o-200);color:var(--o-600);background:var(--o-50)}
+  .filter-btn.active{background:var(--c-900);color:var(--white);border-color:var(--c-900)}
+
+  .featured{padding:0 48px 120px;background:var(--white)}
+  .featured-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:56px}
+  .featured-card{position:relative;border-radius:2px;overflow:hidden;aspect-ratio:4/3;display:block}
+  .featured-card img{width:100%;height:100%;object-fit:cover;transition:transform 0.9s var(--ease)}
+  .featured-card:hover img{transform:scale(1.03)}
+  .featured-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(13,17,23,0.88) 0%,rgba(13,17,23,0.3) 50%,transparent 100%);padding:48px;display:flex;flex-direction:column;justify-content:flex-end;transition:background 0.4s}
+  .featured-card:hover .featured-overlay{background:linear-gradient(to top,rgba(13,17,23,0.92) 0%,rgba(13,17,23,0.4) 60%,transparent 100%)}
+  .featured-tag{font-family:var(--fm);font-size:11px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:var(--o-300);margin-bottom:16px}
+  .featured-title{font-family:var(--fd);font-size:clamp(26px,2.5vw,40px);font-weight:500;line-height:1.12;margin-bottom:14px;letter-spacing:-0.01em;color:var(--white)}
+  .featured-excerpt{font-family:var(--fb);font-size:15px;font-weight:400;color:var(--c-500);line-height:1.6;max-width:460px}
+
+  .articles{padding:0 48px 160px;background:var(--white)}
+  .articles-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:56px}
+  .article-card{display:block;color:var(--c-900);transition:transform 0.5s var(--ease)}
+  .article-card:hover{transform:translateY(-6px)}
+  .article-thumb{width:100%;aspect-ratio:16/10;border-radius:2px;overflow:hidden;margin-bottom:28px;background:var(--w-200)}
+  .article-thumb img{width:100%;height:100%;object-fit:cover;filter:grayscale(20%);transition:all 0.6s ease}
+  .article-card:hover .article-thumb img{filter:grayscale(0%);transform:scale(1.03)}
+  .article-tag{font-family:var(--fm);font-size:11px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:var(--c-600);margin-bottom:12px}
+  .article-title{font-family:var(--fd);font-size:24px;font-weight:500;line-height:1.25;margin-bottom:12px;letter-spacing:-0.01em;transition:color 0.3s}
+  .article-card:hover .article-title{color:var(--o-700)}
+  .article-excerpt{font-family:var(--fb);font-size:15px;font-weight:400;color:var(--c-700);line-height:1.6;margin-bottom:16px}
+  .article-date{font-family:var(--fb);font-size:13px;color:var(--c-600)}
+
+  .newsletter{position:relative;padding:200px 48px;background:var(--o-950);color:var(--white);overflow:hidden;text-align:center}
+  .newsletter-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(0,151,167,0.1) 0%,transparent 60%);pointer-events:none}
+  .newsletter-inner{max-width:640px;margin:0 auto;position:relative;z-index:2}
+  .newsletter-label{font-family:var(--fm);font-size:12px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--o-300);margin-bottom:36px}
+  .newsletter-title{font-family:var(--fd);font-size:clamp(40px,4.5vw,72px);font-weight:500;line-height:1.0;letter-spacing:-0.02em;margin-bottom:36px}
+  .newsletter-title em{font-style:italic;font-weight:400;color:var(--o-200)}
+  .newsletter-body{font-family:var(--fb);font-size:16px;font-weight:400;color:var(--c-500);line-height:1.7;margin-bottom:56px}
+  .newsletter-form{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+  .newsletter-input{flex:1;min-width:280px;padding:16px 28px;border-radius:100px;border:2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:var(--white);font-family:var(--fb);font-size:15px;outline:none;transition:all 0.3s}
+  .newsletter-input::placeholder{color:var(--c-600)}
+  .newsletter-input:focus{border-color:var(--o-300);background:rgba(255,255,255,0.08)}
+  .newsletter-btn{padding:16px 36px;border-radius:100px;background:var(--white);color:var(--c-900);font-family:var(--fm);font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;border:none;cursor:pointer;transition:all 0.4s var(--ease);line-height:1}
+  .newsletter-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,0.2)}
+
+  .footer{padding:140px 48px 64px;background:var(--c-900);color:var(--c-500)}
+  .footer-grid{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:100px;margin-bottom:100px}
+  .footer-brand{max-width:340px}
+  .footer-logo{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+  .footer-logo img{height:40px;width:auto}
+  .footer-logo-text{font-family:var(--fd);font-size:24px;font-weight:500;color:var(--white);letter-spacing:-0.01em}
+  .footer-desc{font-family:var(--fb);font-size:15px;font-weight:400;line-height:1.7;color:var(--c-600)}
+  .footer-col-title{font-family:var(--fm);font-size:11px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:var(--white);margin-bottom:28px}
+  .footer-col-links{display:flex;flex-direction:column;gap:14px}
+  .footer-col-links a{font-family:var(--fb);font-size:15px;font-weight:400;color:var(--c-600);transition:color 0.3s}
+  .footer-col-links a:hover{color:var(--white)}
+  .footer-bottom{max-width:1400px;margin:0 auto;border-top:1px solid rgba(255,255,255,0.08);padding-top:40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+  .footer-legal{font-family:var(--fb);font-size:13px;color:var(--c-600)}
+  .footer-legal a{color:var(--c-600);text-decoration:none;margin-left:28px;transition:color 0.3s}
+  .footer-legal a:hover{color:var(--white)}
+
+  .rv{opacity:0;transform:translateY(60px);transition:opacity 1.1s var(--ease),transform 1.1s var(--ease)}
+  .rv.vis{opacity:1;transform:translateY(0)}
+  .rv-d1{transition-delay:0.12s} .rv-d2{transition-delay:0.24s} .rv-d3{transition-delay:0.36s} .rv-d4{transition-delay:0.48s}
+  .rv-s{opacity:0;transform:scale(0.96);transition:opacity 1.2s var(--ease),transform 1.2s var(--ease)}
+  .rv-s.vis{opacity:1;transform:scale(1)}
+
+  @media(max-width:1024px){
+    .nav{padding:0 32px;height:76px} .nav.scrolled{height:68px} .nav-links,.nav-cta{display:none} .nav-toggle{display:flex}
+    .page-hero{padding:160px 32px 100px} .filter{padding:0 32px 60px}
+    .featured{padding:0 32px 80px} .featured-inner{grid-template-columns:1fr}
+    .articles{padding:0 32px 100px} .articles-inner{grid-template-columns:1fr 1fr;gap:40px}
+    .newsletter{padding:120px 32px} .footer{padding:100px 32px 48px} .footer-grid{grid-template-columns:1fr 1fr;gap:60px}
+  }
+  @media(max-width:640px){
+    .nav{padding:0 24px;height:72px} .nav-logo img{height:36px} .nav-logo span{font-size:22px}
+    .page-hero{padding:140px 24px 80px} .page-hero-title{font-size:clamp(40px,12vw,52px)} .page-hero-sub{font-size:15px}
+    .filter{padding:0 24px 40px}
+    .featured{padding:0 24px 60px} .featured-overlay{padding:28px}
+    .featured-title{font-size:clamp(22px,6vw,26px)} .featured-excerpt{font-size:14px}
+    .articles{padding:0 24px 80px} .articles-inner{grid-template-columns:1fr}
+    .article-title{font-size:22px} .article-thumb{height:200px}
+    .newsletter{padding:100px 24px} .newsletter-title{font-size:clamp(36px,9vw,44px)} .newsletter-form{flex-direction:column;align-items:stretch}
+    .footer{padding:80px 24px 40px} .footer-grid{grid-template-columns:1fr;gap:48px} .footer-bottom{flex-direction:column;align-items:flex-start;gap:16px} .footer-legal a{margin-left:0;margin-right:20px}
+  }
+
+
+  /* ============================================
+     ENHANCED MOTION / REVEAL SYSTEM
+     Restores premium page reveals, subtle graphic motion,
+     image lift, glow breathing, and staggered entrances.
+     ============================================ */
+  .rv,.rv-s,.rv-l,.rv-r{will-change:opacity,transform;backface-visibility:hidden}
+  .rv.vis,.rv-s.vis,.rv-l.vis,.rv-r.vis{will-change:auto}
+  .hero-bg,.p-bg{will-change:transform;transition:transform 0.2s linear}
+  .hero-grain,.pathing-grain{animation:fwGrainDrift 18s steps(6) infinite;will-change:background-position}
+  .pathing-glow,.cta-glow,.stats-glow,.newsletter-glow,.contact-glow{animation:fwGlowPulse 7s var(--ease) infinite alternate;will-change:transform,opacity}
+  .timeline-dot,.tax-badge-dot{animation:fwDotPulse 2.6s ease-in-out infinite}
+  .svc-card,.pricing-card,.article-card,.arc-visual,.entity-visual,.portal-card,.form-card,.stat-item,.insights-feat,.insights-item{will-change:transform;transition:transform 0.6s var(--ease),box-shadow 0.6s var(--ease),border-color 0.4s ease,background 0.4s ease}
+  .pricing-card:hover,.article-card:hover,.arc-visual:hover,.entity-visual:hover,.portal-card:hover,.form-card:hover,.stat-item:hover{transform:translateY(-6px)}
+  .arc-visual img,.entity-visual img,.article-thumb img,.insights-feat img,.timeline-visual img,.hero-bg,.p-bg{transition:transform 1.1s var(--ease),filter 0.6s ease}
+  .arc-visual:hover img,.entity-visual:hover img,.article-card:hover .article-thumb img,.insights-feat:hover img{transform:scale(1.035)}
+  .line,.hero-line{transform-origin:left center;animation:fwLineBreath 3.8s ease-in-out infinite alternate}
+  @keyframes fwGrainDrift{0%{background-position:0 0}100%{background-position:256px 256px}}
+  @keyframes fwGlowPulse{0%{opacity:.55;transform:translate3d(0,0,0) scale(.96)}100%{opacity:1;transform:translate3d(0,-10px,0) scale(1.04)}}
+  @keyframes fwDotPulse{0%,100%{opacity:.45;box-shadow:0 0 0 0 rgba(0,151,167,.22)}50%{opacity:1;box-shadow:0 0 0 10px rgba(0,151,167,0)}}
+  @keyframes fwLineBreath{0%{opacity:.35;transform:scaleX(.72)}100%{opacity:.72;transform:scaleX(1)}}
+
+  @media(prefers-reduced-motion:reduce){.rv,.rv-s{opacity:1;transform:none;transition:none}}
+
+
+  /* ============================================
+     ADD-ON: SIGNAL CARDS / LEGACY CONTENT / MARQUEE
+     ============================================ */
+  .fw-signal{position:relative;padding:120px 48px;background:var(--w-100);overflow:hidden}
+  .fw-signal::before{content:'';position:absolute;inset:auto -10% -35% auto;width:620px;height:620px;border-radius:50%;background:radial-gradient(circle,rgba(0,151,167,.10),transparent 62%);pointer-events:none;animation:fwGlowPulse 8s var(--ease) infinite alternate}
+  .fw-signal-inner{max-width:1400px;margin:0 auto;position:relative;z-index:2}
+  .fw-signal-head{display:flex;align-items:flex-end;justify-content:space-between;gap:40px;margin-bottom:56px;flex-wrap:wrap}
+  .fw-kicker{font-family:var(--fm);font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--o-700);display:flex;align-items:center;gap:18px;margin-bottom:20px}
+  .fw-kicker::before{content:'';width:58px;height:2px;background:var(--o-500);opacity:.7}
+  .fw-signal-title{font-family:var(--fd);font-size:clamp(38px,4.8vw,76px);font-weight:500;line-height:.98;letter-spacing:-.03em;color:var(--c-900);text-wrap:balance}
+  .fw-signal-title em{font-style:italic;font-weight:400;color:var(--o-700)}
+  .fw-signal-copy{font-family:var(--fb);font-size:16px;line-height:1.75;color:var(--c-700);max-width:560px}
+  .fw-signal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .fw-signal-card{position:relative;min-height:255px;padding:34px 30px;border:2px solid var(--w-200);background:rgba(255,255,255,.78);backdrop-filter:blur(14px);overflow:hidden;color:var(--c-900);transition:transform .65s var(--ease),box-shadow .65s var(--ease),border-color .45s ease,background .45s ease;isolation:isolate}
+  .fw-signal-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,151,167,.10),transparent 46%);opacity:0;transition:opacity .55s var(--ease);z-index:-1}
+  .fw-signal-card::after{content:'';position:absolute;right:22px;bottom:22px;width:88px;height:58px;background:linear-gradient(90deg,var(--o-500) 10px,transparent 10px) 0 0/22px 22px,linear-gradient(var(--o-500) 10px,transparent 10px) 0 0/22px 22px;opacity:.08;transition:opacity .55s var(--ease),transform .65s var(--ease)}
+  .fw-signal-card:hover{transform:translateY(-8px);border-color:var(--o-300);box-shadow:0 28px 70px rgba(13,17,23,.10);background:var(--white)}
+  .fw-signal-card:hover::before{opacity:1}.fw-signal-card:hover::after{opacity:.18;transform:translate(-8px,-8px)}
+  .fw-signal-num{font-family:var(--fm);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--o-600);margin-bottom:34px;display:flex;justify-content:space-between;align-items:center}
+  .fw-signal-icon{width:42px;height:42px;border:2px solid var(--o-200);border-radius:50%;display:grid;place-items:center;font-family:var(--fd);font-size:22px;color:var(--o-700);background:var(--w-50)}
+  .fw-signal-card h3{font-family:var(--fd);font-size:30px;font-weight:500;line-height:1.08;letter-spacing:-.02em;margin-bottom:16px}.fw-signal-card h3 em{font-style:italic;color:var(--o-700);font-weight:400}
+  .fw-signal-card p{font-family:var(--fb);font-size:14px;line-height:1.65;color:var(--c-700)}
+  .fw-signal-link{display:inline-flex;margin-top:24px;gap:10px;align-items:center;font-family:var(--fm);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--c-900);border-bottom:2px solid var(--c-900);padding-bottom:4px;transition:gap .35s var(--ease),color .35s,border-color .35s}.fw-signal-link:hover{gap:16px;color:var(--o-700);border-color:var(--o-700)}
+  .fw-dark-card{background:var(--o-950);color:var(--white);border-color:rgba(255,255,255,.08)}.fw-dark-card .fw-signal-icon{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:var(--o-200)}.fw-dark-card h3,.fw-dark-card .fw-signal-link{color:var(--white)}.fw-dark-card p{color:var(--c-500)}.fw-dark-card .fw-signal-link{border-color:rgba(255,255,255,.7)}
+  .fw-marquee{position:relative;overflow:hidden;background:var(--c-900);color:var(--white);border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08)}
+  .fw-marquee-track{display:flex;width:max-content;animation:fwMarquee 32s linear infinite}.fw-marquee:hover .fw-marquee-track{animation-play-state:paused}
+  .fw-marquee-item{display:flex;align-items:center;gap:14px;padding:26px 38px;font-family:var(--fm);font-size:12px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.74);white-space:nowrap}.fw-marquee-item::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--o-400);box-shadow:0 0 16px rgba(0,151,167,.65)}
+  @keyframes fwMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .fw-tax-extension{position:relative;padding:110px 48px;background:var(--o-950);color:var(--white);overflow:hidden}.fw-tax-extension::before{content:'';position:absolute;right:-12%;top:-45%;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(0,151,167,.18),transparent 62%);animation:fwGlowPulse 7s var(--ease) infinite alternate}.fw-tax-box{max-width:1200px;margin:0 auto;position:relative;z-index:2;display:grid;grid-template-columns:1fr 1.3fr;gap:72px;align-items:center}.fw-tax-price{font-family:var(--fd);font-size:clamp(70px,10vw,150px);line-height:.8;color:var(--o-200);letter-spacing:-.06em}.fw-tax-price span{font-family:var(--fm);font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--c-500);display:block;margin-top:20px}.fw-tax-extension h2{font-family:var(--fd);font-size:clamp(36px,5vw,76px);font-weight:500;line-height:.98;letter-spacing:-.03em;margin-bottom:28px}.fw-tax-extension h2 em{font-style:italic;color:var(--o-200);font-weight:400}.fw-tax-extension p{font-size:16px;line-height:1.75;color:var(--c-500);max-width:680px}.fw-tax-note{margin-top:24px;padding-top:24px;border-top:1px solid rgba(255,255,255,.10);font-size:14px!important;color:var(--c-600)!important}
+  @media(max-width:1024px){.fw-signal{padding:90px 32px}.fw-signal-grid{grid-template-columns:1fr 1fr}.fw-tax-box{grid-template-columns:1fr;gap:40px}.fw-tax-extension{padding:90px 32px}}
+  @media(max-width:640px){.fw-signal{padding:72px 24px}.fw-signal-grid{grid-template-columns:1fr}.fw-signal-head{margin-bottom:36px}.fw-signal-card{min-height:auto;padding:30px 24px}.fw-marquee-item{padding:22px 24px}.fw-tax-extension{padding:78px 24px}.fw-tax-price{font-size:74px}}
+
+
+
+  /* ============================================
+     FINAL POLISH: FIRST-VISIT LOGO INTRO, SKY-BLUE BRAND LIFT,
+     HONOR SLIDER, AND CONFIRMATION MODAL
+     ============================================ */
+  :root{--sky-50:#EAFBFF;--sky-100:#CFF5FF;--sky-300:#74DFFF;--sky-400:#38C8F4;--sky-500:#10B7E8;--sky-glow:rgba(56,200,244,.28)}
+  ::selection{background:var(--sky-300);color:var(--o-950)}
+  .nav-logo img,.footer-logo img{filter:drop-shadow(0 8px 18px rgba(16,183,232,.10))}
+  .nav-cta,.hero-cta,.cta-btn,.diagnostic-btn,.form-submit,.newsletter-btn,.pricing-btn-primary{box-shadow:0 0 0 rgba(56,200,244,0);position:relative;overflow:hidden}
+  .nav-cta::before,.hero-cta::before,.cta-btn::before,.diagnostic-btn::before,.form-submit::before,.newsletter-btn::before,.pricing-btn-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(120deg,transparent 0%,rgba(255,255,255,.28) 45%,transparent 70%);transform:translateX(-120%);transition:transform .8s var(--ease);pointer-events:none}
+  .nav-cta:hover::before,.hero-cta:hover::before,.cta-btn:hover::before,.diagnostic-btn:hover::before,.form-submit:hover::before,.newsletter-btn:hover::before,.pricing-btn-primary:hover::before{transform:translateX(120%)}
+  .fw-splash{position:fixed;inset:0;z-index:99999;background:radial-gradient(circle at 50% 42%,rgba(56,200,244,.16),transparent 34%),linear-gradient(135deg,var(--w-50) 0%,#ffffff 38%,var(--sky-50) 100%);display:grid;place-items:center;overflow:hidden;transition:opacity .85s var(--ease),visibility .85s var(--ease)}
+  .fw-splash.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
+  .fw-splash::before{content:'';position:absolute;inset:0;opacity:.06;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:fwGrainDrift 12s steps(5) infinite}
+  .fw-splash::after{content:'';position:absolute;width:52vw;height:52vw;max-width:720px;max-height:720px;border-radius:50%;border:1px solid rgba(16,183,232,.18);box-shadow:0 0 120px rgba(56,200,244,.16);animation:fwSplashRing 2.4s var(--ease) both}
+  .fw-splash-card{position:relative;z-index:2;text-align:center;transform:translateY(20px) scale(.96);opacity:0;animation:fwSplashEnter 1.25s var(--ease) .15s forwards}
+  .fw-splash-logo-wrap{width:128px;height:128px;margin:0 auto 30px;background:var(--white);border:1px solid rgba(16,183,232,.22);display:grid;place-items:center;box-shadow:0 34px 90px rgba(0,37,41,.12),0 0 80px rgba(56,200,244,.18)}
+  .fw-splash-logo-wrap img{width:82px;height:auto;animation:fwSplashLogo 1.8s var(--ease) .25s both}
+  .fw-splash-name{font-family:var(--fd);font-size:clamp(38px,6vw,86px);font-weight:500;letter-spacing:-.035em;line-height:.95;color:var(--c-900)}
+  .fw-splash-name em{font-style:italic;color:var(--o-700);font-weight:400}.fw-splash-sub{margin-top:22px;font-family:var(--fm);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--o-700)}
+  .fw-splash-bar{width:260px;height:2px;background:rgba(0,151,167,.14);margin:34px auto 0;overflow:hidden}.fw-splash-bar span{display:block;width:100%;height:100%;background:linear-gradient(90deg,var(--o-600),var(--sky-400));transform-origin:left;animation:fwSplashLoad 1.8s var(--ease) .25s both}
+  @keyframes fwSplashEnter{to{opacity:1;transform:translateY(0) scale(1)}}@keyframes fwSplashLogo{0%{clip-path:inset(0 100% 0 0);transform:scale(.92)}100%{clip-path:inset(0 0 0 0);transform:scale(1)}}@keyframes fwSplashLoad{0%{transform:scaleX(0)}100%{transform:scaleX(1)}}@keyframes fwSplashRing{0%{transform:scale(.72);opacity:0}45%{opacity:1}100%{transform:scale(1.08);opacity:.55}}
+  .fw-honors{position:relative;padding:120px 48px;background:linear-gradient(180deg,var(--white),var(--sky-50));overflow:hidden;border-top:1px solid var(--w-200);border-bottom:1px solid var(--w-200)}
+  .fw-honors::before{content:'';position:absolute;left:-14%;top:-30%;width:620px;height:620px;border-radius:50%;background:radial-gradient(circle,rgba(56,200,244,.18),transparent 62%);animation:fwGlowPulse 8s var(--ease) infinite alternate}.fw-honors-inner{max-width:1400px;margin:0 auto;position:relative;z-index:2}.fw-honors-head{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;margin-bottom:54px;flex-wrap:wrap}.fw-honors-title{font-family:var(--fd);font-size:clamp(38px,4.8vw,76px);font-weight:500;line-height:.98;letter-spacing:-.03em}.fw-honors-title em{font-style:italic;color:var(--o-700);font-weight:400}.fw-honors-copy{max-width:520px;color:var(--c-700);line-height:1.75}.fw-honor-window{overflow:hidden}.fw-honor-track{display:flex;gap:24px;width:max-content;animation:fwHonorSlide 34s linear infinite}.fw-honor-window:hover .fw-honor-track{animation-play-state:paused}.fw-honor-card{width:320px;min-height:210px;padding:32px;background:rgba(255,255,255,.82);border:2px solid rgba(0,151,167,.10);box-shadow:0 24px 70px rgba(13,17,23,.06);backdrop-filter:blur(14px);flex:0 0 auto}.fw-honor-icon{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--o-500),var(--sky-400));color:var(--white);font-family:var(--fd);font-size:24px;margin-bottom:26px;box-shadow:0 16px 34px rgba(16,183,232,.25)}.fw-honor-card h3{font-family:var(--fd);font-size:28px;font-weight:500;letter-spacing:-.02em;margin-bottom:12px}.fw-honor-card p{font-size:14px;line-height:1.65;color:var(--c-700)}@keyframes fwHonorSlide{from{transform:translateX(0)}to{transform:translateX(calc(-50% - 12px))}}
+  .fw-confirm{position:fixed;inset:0;z-index:99998;display:grid;place-items:center;background:rgba(13,17,23,.58);backdrop-filter:blur(12px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .45s var(--ease),visibility .45s var(--ease)}.fw-confirm.active{opacity:1;visibility:visible;pointer-events:auto}.fw-confirm-card{width:min(560px,calc(100% - 40px));background:var(--white);border:2px solid var(--sky-100);box-shadow:0 40px 120px rgba(0,0,0,.28),0 0 70px rgba(56,200,244,.18);padding:46px 42px;text-align:center;transform:translateY(24px) scale(.96);transition:transform .5s var(--ease)}.fw-confirm.active .fw-confirm-card{transform:translateY(0) scale(1)}.fw-confirm-icon{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;margin:0 auto 26px;background:linear-gradient(135deg,var(--o-500),var(--sky-400));color:var(--white);font-size:34px;box-shadow:0 20px 50px rgba(16,183,232,.25)}.fw-confirm-title{font-family:var(--fd);font-size:clamp(34px,5vw,54px);font-weight:500;line-height:1;letter-spacing:-.03em;margin-bottom:18px}.fw-confirm-title em{font-style:italic;color:var(--o-700);font-weight:400}.fw-confirm-body{color:var(--c-700);line-height:1.7;margin-bottom:30px}.fw-confirm-close{display:inline-flex;align-items:center;justify-content:center;padding:15px 32px;border-radius:999px;background:var(--c-900);color:var(--white);font-family:var(--fm);font-size:12px;letter-spacing:.12em;text-transform:uppercase;transition:all .4s var(--ease)}.fw-confirm-close:hover{transform:translateY(-2px);box-shadow:0 18px 38px rgba(0,0,0,.18)}
+  @media(max-width:1024px){.fw-honors{padding:90px 32px}.fw-honor-card{width:300px}}
+  @media(max-width:640px){.fw-splash-logo-wrap{width:104px;height:104px}.fw-splash-logo-wrap img{width:68px}.fw-splash-bar{width:210px}.fw-honors{padding:76px 24px}.fw-honor-card{width:280px;padding:28px}.fw-confirm-card{padding:38px 26px}}
+  @media(prefers-reduced-motion:reduce){.fw-splash,.fw-splash *,.fw-honor-track{animation:none!important}.fw-splash-card{opacity:1;transform:none}.fw-splash-bar span{transform:none}}
+
+
+
+  /* FINAL BUG FIX PASS — spacing and overflow cleanup */
+  .fw-marquee{clear:both}
+  .page-hero{padding-top:180px!important;padding-bottom:105px!important}
+  .newsletter,.diagnostic,.cta-section,.final-cta{padding-top:130px!important;padding-bottom:130px!important}
+  .features,.process,.pricing,.entity,.stats,.portals,.articles,.featured{padding-top:95px!important;padding-bottom:95px!important}
+  @media(max-width:1024px){.page-hero{padding-top:145px!important;padding-bottom:80px!important}.newsletter,.diagnostic,.cta-section,.final-cta{padding-top:100px!important;padding-bottom:100px!important}.features,.process,.pricing,.entity,.stats,.portals,.articles,.featured{padding-top:75px!important;padding-bottom:75px!important}}
+  @media(max-width:640px){.page-hero{padding-top:125px!important;padding-bottom:65px!important}.newsletter,.diagnostic,.cta-section,.final-cta{padding-top:78px!important;padding-bottom:78px!important}.features,.process,.pricing,.entity,.stats,.portals,.articles,.featured{padding-top:60px!important;padding-bottom:60px!important}}
+
+
+
+  /* ============================================
+     FINAL DELIVERY FOOTER + CALIFORNIA / CLIENT ACCESS POLISH
+     ============================================ */
+  .footer-premium{position:relative;overflow:hidden;background:linear-gradient(145deg,var(--c-900),#061E24 58%,var(--o-950))!important;color:var(--c-500)!important}
+  .footer-ambient{position:absolute;right:-12%;top:-42%;width:740px;height:740px;border-radius:50%;background:radial-gradient(circle,rgba(56,200,244,.16),transparent 62%);pointer-events:none;animation:fwGlowPulse 8s var(--ease) infinite alternate}
+  .footer-premium .footer-grid,.footer-premium .footer-bottom{position:relative;z-index:2}
+  .footer-premium a{transition:color .3s ease,border-color .3s ease,transform .35s var(--ease)}
+  .footer-address a{color:var(--o-200);border-bottom:1px solid rgba(158,207,212,.35)}
+  .footer-social{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}.footer-social a{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.045);color:var(--white);font-family:var(--fm);font-size:11px;letter-spacing:.08em}.footer-social a:hover{transform:translateY(-3px);border-color:var(--sky-300);color:var(--sky-300);box-shadow:0 14px 30px rgba(16,183,232,.12)}
+  .ca-office{position:relative;padding:120px 48px;background:linear-gradient(180deg,var(--w-50),var(--white));overflow:hidden}.ca-office::before{content:'';position:absolute;left:-10%;top:-35%;width:620px;height:620px;border-radius:50%;background:radial-gradient(circle,rgba(56,200,244,.13),transparent 62%);animation:fwGlowPulse 8s var(--ease) infinite alternate}.ca-office-inner{position:relative;z-index:2;max-width:1320px;margin:0 auto;display:grid;grid-template-columns:.9fr 1.1fr;gap:80px;align-items:center}.ca-office-label{font-family:var(--fm);font-size:12px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--o-700);display:flex;align-items:center;gap:18px;margin-bottom:26px}.ca-office-label::before{content:'';width:56px;height:2px;background:var(--o-500)}.ca-office-title{font-family:var(--fd);font-size:clamp(42px,5vw,82px);font-weight:500;line-height:.98;letter-spacing:-.03em;margin-bottom:28px}.ca-office-title em{font-style:italic;color:var(--o-700);font-weight:400}.ca-office-body{font-size:16px;line-height:1.75;color:var(--c-700);max-width:560px}.ca-office-actions{display:flex;gap:16px;flex-wrap:wrap;margin-top:36px}.ca-office-btn{display:inline-flex;align-items:center;gap:10px;padding:16px 30px;border-radius:999px;border:2px solid var(--c-900);font-family:var(--fm);font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;transition:all .4s var(--ease)}.ca-office-btn.primary{background:var(--c-900);color:var(--white)}.ca-office-btn:hover{transform:translateY(-3px);box-shadow:0 18px 42px rgba(0,0,0,.12)}.ca-map-card{position:relative;min-height:520px;background:linear-gradient(135deg,#fff,var(--sky-50));border:2px solid rgba(0,151,167,.12);box-shadow:0 30px 90px rgba(13,17,23,.08);overflow:hidden}.ca-map-card::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(0,151,167,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,151,167,.07) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(135deg,rgba(0,0,0,.8),transparent 72%)}.ca-map-svg{position:absolute;right:8%;top:50%;width:min(45%,260px);transform:translateY(-50%);filter:drop-shadow(0 30px 50px rgba(0,37,41,.12));opacity:.92}.ca-map-pin{position:absolute;left:38%;top:50%;width:18px;height:18px;border-radius:50%;background:var(--sky-400);box-shadow:0 0 0 10px rgba(56,200,244,.18),0 0 0 22px rgba(56,200,244,.08);animation:fwDotPulse 2.4s ease-in-out infinite}.ca-map-info{position:absolute;left:42px;bottom:42px;right:42px;background:rgba(255,255,255,.86);backdrop-filter:blur(14px);border:1px solid rgba(0,151,167,.12);padding:30px}.ca-map-info h3{font-family:var(--fd);font-size:34px;font-weight:500;letter-spacing:-.02em;margin-bottom:12px}.ca-map-info p{color:var(--c-700);line-height:1.65}.ca-map-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}.ca-map-meta span{font-family:var(--fm);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--o-700);padding:10px 12px;background:var(--sky-50);border:1px solid rgba(0,151,167,.10);text-align:center}
+  @media(max-width:1024px){.ca-office{padding:95px 32px}.ca-office-inner{grid-template-columns:1fr;gap:56px}.ca-map-card{min-height:460px}}
+  @media(max-width:640px){.ca-office{padding:76px 24px}.ca-map-card{min-height:500px}.ca-map-svg{width:210px;right:2%;top:32%}.ca-map-pin{left:28%;top:37%}.ca-map-info{left:22px;right:22px;bottom:22px;padding:24px}.ca-map-meta{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+
+
+
+<nav class="nav" id="nav">
+  <a href="index.html" class="nav-logo"><img src="../images/logo-original.jpg" alt="Folk Williams"><span>Folk Williams</span></a>
+  <ul class="nav-links"><li><a href="index.html">Home</a></li><li><a href="tax-preparation.html">Tax</a></li><li><a href="accounting.html">Accounting</a></li><li><a href="business-management.html">Business</a></li><li><a href="contact.html">Contact</a></li></ul>
+  <a href="https://folkwilliams.securefilepro.com/portal/#/login" target="_blank" rel="noopener" class="nav-cta">Client Portal</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mob-overlay" id="mobOverlay">
+  <a href="index.html">Home</a><a href="tax-preparation.html">Tax</a><a href="accounting.html">Accounting</a><a href="business-management.html">Business</a><a href="contact.html">Contact</a>
+  <a href="https://folkwilliams.securefilepro.com/portal/#/login" target="_blank" rel="noopener" class="nav-cta">Client Portal</a>
+</div>
+
+<section class="page-hero">
+  <div class="page-hero-glow"></div>
+  <div class="page-hero-content">
+    <p class="page-hero-label rv">Insights Hub</p>
+    <h1 class="page-hero-title rv rv-d1">Market commentary.<br><em>Institutional perspective.</em></h1>
+    <p class="page-hero-sub rv rv-d2">Tax tips, regulatory updates, and strategic thinking for individuals, founders, and family stewards navigating complex financial landscapes.</p>
+  </div>
+</section>
+
+<section class="filter">
+  <div class="filter-inner rv">
+    <button class="filter-btn active">All</button>
+    <button class="filter-btn">Tax Strategy</button>
+    <button class="filter-btn">Business</button>
+    <button class="filter-btn">Wealth</button>
+    <button class="filter-btn">Regulatory</button>
+    <button class="filter-btn">Family Office</button>
+  </div>
+</section>
+
+<section class="fw-signal insight-category-deck">
+  <div class="fw-signal-inner">
+    <div class="fw-signal-head">
+      <div>
+        <p class="fw-kicker rv">Editorial Navigation</p>
+        <h2 class="fw-signal-title rv rv-d1">Choose the lens.<br><em>Find the signal.</em></h2>
+      </div>
+      <p class="fw-signal-copy rv rv-d2">A cleaner card-based category system for tax strategy, business decisions, wealth stewardship, regulatory shifts, and family office thinking.</p>
+    </div>
+    <div class="fw-signal-grid">
+      <a href="#" class="fw-signal-card fw-dark-card rv-s" data-filter-card="All"><div class="fw-signal-num"><span>All</span><span class="fw-signal-icon">A</span></div><h3>All <em>Insights</em></h3><p>View the full editorial stream across tax, accounting, wealth, regulation, and family office strategy.</p><span class="fw-signal-link">View All →</span></a>
+      <a href="#" class="fw-signal-card rv-s rv-d1" data-filter-card="Tax Strategy"><div class="fw-signal-num"><span>Tax</span><span class="fw-signal-icon">T</span></div><h3>Tax <em>Strategy</em></h3><p>Planning windows, deduction strategy, extension timing, estimated payments, and entity-level tax implications.</p><span class="fw-signal-link">Filter →</span></a>
+      <a href="#" class="fw-signal-card rv-s rv-d2" data-filter-card="Business"><div class="fw-signal-num"><span>Business</span><span class="fw-signal-icon">B</span></div><h3>Business <em>Advisory</em></h3><p>Entity structure, bookkeeping cadence, cash management, business formation, and operational finance.</p><span class="fw-signal-link">Filter →</span></a>
+      <a href="#" class="fw-signal-card rv-s" data-filter-card="Wealth"><div class="fw-signal-num"><span>Wealth</span><span class="fw-signal-icon">W</span></div><h3>Wealth that <em>Endures</em></h3><p>Cash preservation, scorecards, investment planning, estate coordination, and long-range stewardship.</p><span class="fw-signal-link">Filter →</span></a>
+      <a href="#" class="fw-signal-card rv-s rv-d1" data-filter-card="Regulatory"><div class="fw-signal-num"><span>Regulatory</span><span class="fw-signal-icon">R</span></div><h3>Regulatory <em>Updates</em></h3><p>Compliance changes, filing requirements, IRS updates, state developments, and planning deadlines.</p><span class="fw-signal-link">Filter →</span></a>
+      <a href="#" class="fw-signal-card rv-s rv-d2" data-filter-card="Family Office"><div class="fw-signal-num"><span>Family Office</span><span class="fw-signal-icon">F</span></div><h3>Family <em>Office</em></h3><p>Governance, education, trust coordination, next-generation wealth behavior, and family decision rhythms.</p><span class="fw-signal-link">Filter →</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="featured">
+  <div class="featured-inner">
+    <a href="#" class="featured-card rv-s">
+      <img src="../images/texture-oceanic.jpg" alt="Abstract texture">
+      <div class="featured-overlay">
+        <span class="featured-tag">Tax Strategy</span>
+        <h2 class="featured-title">The Mid-Year Tax Review: Why July Is Your Strategic Window</h2>
+        <p class="featured-excerpt">Most taxpayers wait until December. By then, the moves that matter are already off the table.</p>
+      </div>
+    </a>
+    <a href="#" class="featured-card rv-s rv-d1">
+      <img src="../images/hero-architecture.jpg" alt="Architecture">
+      <div class="featured-overlay">
+        <span class="featured-tag">Business</span>
+        <h2 class="featured-title">Entity Restructuring for the Modern Founder</h2>
+        <p class="featured-excerpt">S-Corp vs. C-Corp vs. LLC — the decision has less to do with your current tax bracket and everything to do with your exit strategy.</p>
+      </div>
+    </a>
+  </div>
+</section>
+
+<section class="articles">
+  <div class="articles-inner">
+    <a href="#" class="article-card rv">
+      <div class="article-thumb"><img src="../images/editorial-still.jpg" alt="Still life"></div>
+      <p class="article-tag">Family Office</p>
+      <h3 class="article-title">Stewardship Without Entitlement: The Multi-Generational Mindset</h3>
+      <p class="article-excerpt">The families that preserve wealth across four generations share one trait: they treat capital as a responsibility.</p>
+      <p class="article-date">April 12, 2026</p>
+    </a>
+    <a href="#" class="article-card rv rv-d1">
+      <div class="article-thumb"><img src="../images/texture-oceanic.jpg" alt="Texture"></div>
+      <p class="article-tag">Regulatory</p>
+      <h3 class="article-title">1099-K Threshold Changes: What Gig Workers Must Know</h3>
+      <p class="article-excerpt">The IRS has adjusted the 1099-K reporting threshold again. Here is how it affects platform workers.</p>
+      <p class="article-date">March 30, 2026</p>
+    </a>
+    <a href="#" class="article-card rv rv-d2">
+      <div class="article-thumb"><img src="../images/hero-architecture.jpg" alt="Architecture"></div>
+      <p class="article-tag">Wealth</p>
+      <h3 class="article-title">The QSBS Checklist: Are You Leaving 100% of Capital Gains on the Table?</h3>
+      <p class="article-excerpt">Qualified Small Business Stock exclusion is one of the most powerful provisions in the tax code.</p>
+      <p class="article-date">March 14, 2026</p>
+    </a>
+    <a href="#" class="article-card rv">
+      <div class="article-thumb"><img src="../images/hero-premium.jpg" alt="Premium"></div>
+      <p class="article-tag">Tax Strategy</p>
+      <h3 class="article-title">Estimated Payments for the Newly Self-Employed</h3>
+      <p class="article-excerpt">If you left your W-2 job this year, you are now responsible for quarterly estimated payments.</p>
+      <p class="article-date">February 22, 2026</p>
+    </a>
+    <a href="#" class="article-card rv rv-d1">
+      <div class="article-thumb"><img src="../images/archetype-elite.jpg" alt="Elite"></div>
+      <p class="article-tag">Business</p>
+      <h3 class="article-title">Cash vs. Accrual: When to Switch Your Accounting Method</h3>
+      <p class="article-excerpt">Most small businesses start with cash-basis accounting. As you scale, accrual becomes a necessity.</p>
+      <p class="article-date">January 18, 2026</p>
+    </a>
+    <a href="#" class="article-card rv rv-d2">
+      <div class="article-thumb"><img src="../images/archetype-legacy.jpg" alt="Legacy"></div>
+      <p class="article-tag">Family Office</p>
+      <h3 class="article-title">The Annual Family Meeting: Governance Beyond the Balance Sheet</h3>
+      <p class="article-excerpt">Wealthy families that thrive schedule formal annual meetings. Not to review investments — to review values.</p>
+      <p class="article-date">January 5, 2026</p>
+    </a>
+  </div>
+</section>
+
+<section class="newsletter">
+  <div class="newsletter-glow"></div>
+  <div class="newsletter-inner">
+    <p class="newsletter-label rv">Stay Informed</p>
+    <h2 class="newsletter-title rv rv-d1">Receive our insights,<br><em>quarterly.</em></h2>
+    <p class="newsletter-body rv rv-d2">No daily noise. No market panic. Just curated tax strategy, regulatory updates, and wealth stewardship thinking delivered to your inbox once per quarter.</p>
+    <form class="newsletter-form rv rv-d3" onsubmit="event.preventDefault();alert('Thank you for subscribing. We will be in touch.');">
+      <input type="email" class="newsletter-input" placeholder="Your email address" required>
+      <button type="submit" class="newsletter-btn">Subscribe</button>
+    </form>
+  </div>
+</section>
+
+
+<section class="fw-marquee" aria-label="Folk Williams service values">
+  <div class="fw-marquee-track">
+    <span class="fw-marquee-item">Quality</span><span class="fw-marquee-item">Understanding</span><span class="fw-marquee-item">Education</span><span class="fw-marquee-item">Strategy</span><span class="fw-marquee-item">Trust</span><span class="fw-marquee-item">Tax Advisory</span><span class="fw-marquee-item">Personal CFO</span><span class="fw-marquee-item">Estate Planning</span><span class="fw-marquee-item">Risk Management</span>
+    <span class="fw-marquee-item">Quality</span><span class="fw-marquee-item">Understanding</span><span class="fw-marquee-item">Education</span><span class="fw-marquee-item">Strategy</span><span class="fw-marquee-item">Trust</span><span class="fw-marquee-item">Tax Advisory</span><span class="fw-marquee-item">Personal CFO</span><span class="fw-marquee-item">Estate Planning</span><span class="fw-marquee-item">Risk Management</span>
+  </div>
+</section>
+
+
+<footer class="footer footer-premium">
+  <div class="footer-ambient"></div>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo"><img src="../images/logo-original.jpg" alt="Folk Williams Financial Management"><span class="footer-logo-text">Folk Williams</span></div>
+      <p class="footer-desc">California-based financial management for individuals, families, growing entities, entertainers, athletes, and high-net-worth households. Warmth in precision. Clarity in every ledger.</p>
+      <p class="footer-address"><strong>Folk Williams Financial Management, Inc.</strong><br>14724 Ventura Blvd. Suite 401<br>Sherman Oaks, CA 91403<br>Office: <a href="tel:+18186163226">818.616.3226</a> · <a href="tel:+13239370556">323.937.0556</a><br>Fax: 844.274.1132</p>
+      <div class="footer-social" aria-label="Social links">
+        <a href="#" aria-label="Instagram">IG</a>
+        <a href="#" aria-label="Facebook">FB</a>
+        <a href="#" aria-label="LinkedIn">IN</a>
+        <a href="mailto:hello@folkwilliams.com" aria-label="Email">@</a>
+      </div>
+    </div>
+    <div class="footer-col"><p class="footer-col-title">Services</p><div class="footer-col-links"><a href="tax-preparation.html">Tax Preparation</a><a href="accounting.html">Strategic Accounting</a><a href="business-management.html">Business Management</a><a href="contact.html#portals">Secure Portal</a></div></div>
+    <div class="footer-col"><p class="footer-col-title">Company</p><div class="footer-col-links"><a href="index.html#about">Meet Folk Williams</a><a href="index.html#wealth">Wealth That Endures</a><a href="insights.html">Insights Hub</a><a href="tax-preparation.html#tax-extension">Tax Extension</a></div></div>
+    <div class="footer-col"><p class="footer-col-title">Client Access</p><div class="footer-col-links"><a href="https://folkwilliams.securefilepro.com/portal/#/login" target="_blank" rel="noopener">SecureFilePro Login</a><a href="https://folkwilliams.securefilepro.com/portal/#/login" target="_blank" rel="noopener">Document Upload</a><a href="https://www.schwab.com" target="_blank" rel="noopener">Schwab Access</a><a href="https://www.fidelity.com" target="_blank" rel="noopener">Fidelity Access</a></div></div>
+  </div>
+  <div class="footer-bottom"><p class="footer-legal">© 2026 Folk Williams Financial Management, Inc. California-based. All rights reserved.</p><p class="footer-legal"><a href="#">Privacy</a><a href="#">Terms</a><a href="contact.html">Contact</a></p></div>
+</footer>
+
+
+<script>
+  const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const revealCandidateSelectors=[
+    '.hero-content > *','.p-content > *','.page-hero > *','.hero-copy > *',
+    '.intro-left > *','.timeline-item','.tax-content > *','.tax-features > *',
+    '.services-grid > *','.pathing-inner > *','.insights-head > *','.insights-grid > *','.insights-side > *',
+    '.arc-text','.arc-visual','.pricing-header > *','.pricing-card','.article-card',
+    '.entity-inner > *','.entity-item','.stats-inner > *','.portal-card','.form-card',
+    '.contact-grid > *','.newsletter-inner > *','.cta-inner > *','.final-cta > *',
+    '.footer-brand','.footer-col'
+  ];
+  document.querySelectorAll(revealCandidateSelectors.join(',')).forEach((el)=>{
+    if(!el.classList.contains('rv')&&!el.classList.contains('rv-s')&&!el.classList.contains('rv-l')&&!el.classList.contains('rv-r')){
+      const isVisual=el.matches('.arc-visual,.entity-visual,.pricing-card,.article-card,.portal-card,.form-card,.stat-item,.insights-grid > *, .services-grid > *');
+      el.classList.add(isVisual?'rv-s':'rv');
+      el.dataset.autoReveal='true';
+    }
+  });
+  const revealEls=[...document.querySelectorAll('.rv,.rv-s,.rv-l,.rv-r')];
+  revealEls.forEach((el)=>{
+    if(!el.className.match(/rv-d\d/) && !el.style.transitionDelay){
+      const siblings=[...el.parentElement?.children||[]].filter(n=>n.matches?.('.rv,.rv-s,.rv-l,.rv-r'));
+      const i=Math.max(0,siblings.indexOf(el));
+      el.style.transitionDelay=(Math.min(i,4)*0.09)+'s';
+    }
+  });
+  if(reducedMotion){
+    revealEls.forEach(el=>el.classList.add('vis'));
+  }else{
+    const obs=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target)}})},{threshold:0.08,rootMargin:'0px 0px -60px 0px'});
+    revealEls.forEach(el=>obs.observe(el));
+  }
+  const nav=document.getElementById('nav');
+  window.addEventListener('scroll',()=>{if(window.scrollY>80)nav.classList.add('scrolled');else nav.classList.remove('scrolled')},{passive:true});
+  const toggle=document.getElementById('navToggle');
+  const overlay=document.getElementById('mobOverlay');
+  toggle.addEventListener('click',()=>{toggle.classList.toggle('active');overlay.classList.toggle('active');document.body.style.overflow=overlay.classList.contains('active')?'hidden':''});
+  overlay.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{toggle.classList.remove('active');overlay.classList.remove('active');document.body.style.overflow=''}));
+
+
+  // ============================================
+  // INSIGHTS FILTER SYSTEM — pills + premium cards
+  // ============================================
+  const filterBtns=[...document.querySelectorAll('.filter-btn')];
+  const filterCards=[...document.querySelectorAll('[data-filter-card]')];
+  const editorialItems=[...document.querySelectorAll('.featured-card,.article-card')];
+  function getItemCategory(item){return item.querySelector('.featured-tag,.article-tag')?.textContent.trim()||'All'}
+  function setInsightFilter(label){
+    filterBtns.forEach(btn=>btn.classList.toggle('active',btn.textContent.trim()===label));
+    filterCards.forEach(card=>card.classList.toggle('fw-dark-card',card.dataset.filterCard===label));
+    editorialItems.forEach((item,idx)=>{
+      const show=label==='All'||getItemCategory(item)===label;
+      item.style.display=show?'block':'none';
+      if(show){item.classList.remove('vis');setTimeout(()=>item.classList.add('vis'),35+idx*35)}
+    });
+  }
+  filterBtns.forEach(btn=>btn.addEventListener('click',()=>setInsightFilter(btn.textContent.trim())));
+  filterCards.forEach(card=>card.addEventListener('click',(e)=>{e.preventDefault();setInsightFilter(card.dataset.filterCard);document.querySelector('.featured')?.scrollIntoView({behavior:'smooth',block:'start'});}));
+
+</script>
+
+
+</body>
+</html>
