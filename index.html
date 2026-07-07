@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Three.js Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
   :root{--o-50:#E8F4F5;--o-100:#C5E2E5;--o-200:#9ECFD4;--o-300:#76BBC2;--o-400:#58AAB3;--o-500:#0097A7;--o-600:#00838F;--o-700:#006F7A;--o-800:#005A63;--o-900:#00464D;--o-950:#002529;--w-50:#FDFCFA;--w-100:#F7F5F0;--w-200:#F0EBE0;--w-300:#E8DFD0;--w-400:#D4C8B5;--w-500:#B5A58C;--w-600:#9A8B73;--w-700:#7A6D5A;--w-800:#5C5243;--c-900:#0D1117;--c-800:#161B22;--c-700:#4A5568;--c-600:#6B7280;--c-500:#9CA3AF;--c-400:#E5E7EB;--c-300:#F3F4F6;--white:#FFFFFF;--fd:'Cormorant Garamond',Georgia,serif;--fb:'Inter',system-ui,sans-serif;--fm:'Space Grotesk',monospace;--ease:cubic-bezier(0.22,1,0.36,1);}
   *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -17,8 +19,10 @@
   ul{list-style:none}
   button{font-family:inherit;cursor:pointer;border:none;background:none}
 
-  .nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 48px;height:84px;display:flex;align-items:center;justify-content:space-between;transition:all 0.6s var(--ease);border-bottom:1px solid transparent;background:transparent;backdrop-filter:none;box-shadow:none}
-  .nav.scrolled{height:72px;border-bottom-color:var(--c-400);background:rgba(255,255,255,0.94);backdrop-filter:blur(24px) saturate(180%);box-shadow:0 1px 0 rgba(0,0,0,0.04)}
+  /* MODIFIED: Added 10% background color and blur to create the liquid glass effect at the top */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 48px;height:84px;display:flex;align-items:center;justify-content:space-between;transition:all 0.6s var(--ease);border-bottom:1px solid rgba(255,255,255,0.1);background:rgba(255, 255, 255, 0.1);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:none}
+  
+  .nav.scrolled{height:72px;border-bottom-color:var(--c-400);background:rgba(255,255,255,0.7);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 1px 0 rgba(0,0,0,0.04)}
   .nav-logo{display:flex;align-items:center;gap:16px}
   .nav-logo img{height:44px;width:auto;display:block}
   .nav-logo span{font-family:var(--fd);font-size:26px;font-weight:500;letter-spacing:-0.01em;color:var(--c-900);line-height:1}
@@ -40,13 +44,15 @@
   .mob-overlay .nav-cta{margin-top:20px;font-size:14px;padding:16px 40px}
 
   /* ============================================
-     HERO — LINE / TEXT / LINE HEADER
+     HERO — 360 VIEWER
      ============================================ */
-  .hero{position:relative;width:100%;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 48px 80px;overflow:hidden;text-align:center}
-  .hero-bg{position:absolute;inset:0;z-index:0;background:url('images/hero-premium.jpg') center 30% / cover no-repeat;transform:scale(1.1);will-change:transform}
+  .hero{position:relative;width:100%;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 48px 80px;overflow:hidden;text-align:center;background:transparent !important}
+  .hero-bg{position:absolute;inset:0;z-index:0;cursor:grab}
+  .hero-bg:active{cursor:grabbing}
   .hero-grain{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px}
-  .hero-overlay{position:absolute;inset:0;z-index:2;background:linear-gradient(180deg,rgba(247,245,240,0.05) 0%,rgba(247,245,240,0.75) 50%,rgba(247,245,240,0.98) 100%)}
-  .hero-content{position:relative;z-index:3;max-width:1100px}
+  .hero-overlay{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(180deg,rgba(247,245,240,0.02) 0%,rgba(247,245,240,0.2) 50%,rgba(247,245,240,0.6) 100%)}
+  .hero-content{position:relative;z-index:3;max-width:1100px;pointer-events:none}
+  .hero-content .hero-line-text, .hero-content .hero-title, .hero-content .hero-sub, .hero-content .hero-cta { pointer-events:auto }
   .hero-line-text{display:flex;align-items:center;justify-content:center;gap:24px;margin-bottom:40px}
   .hero-line{flex:1;max-width:140px;height:2px;background:var(--o-600);opacity:0.6}
   .hero-line-text span{font-family:var(--fm);font-size:12px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--o-700)}
@@ -366,8 +372,19 @@
   body{background:var(--w-50)}
   .nav.scrolled{background:linear-gradient(90deg,rgba(234,251,255,.96),rgba(255,255,255,.96) 46%,rgba(234,251,255,.94))!important;border-bottom-color:rgba(16,183,232,.28)!important;box-shadow:0 10px 34px rgba(0,37,41,.06)!important}
   .nav.scrolled .nav-cta{border-color:var(--o-800);background:rgba(255,255,255,.34)}
-  .hero{min-height:92vh;padding-bottom:36px}
-  .hero-overlay{background:linear-gradient(180deg,rgba(247,245,240,0.04) 0%,rgba(247,245,240,0.58) 54%,rgba(247,245,240,0.94) 100%)}
+  
+  /* Make sure hero stays behind everything and content accepts clicks correctly */
+  .hero{min-height:92vh;padding-bottom:36px;background:transparent!important;}
+  .hero-bg{position:absolute;inset:0;width:100%;height:100%;z-index:0;border:0;cursor:grab;}
+  .hero-bg:active { cursor: grabbing; }
+  
+  /* Reduced white overlay significantly so the 360 image is clear */
+  .hero-overlay{pointer-events:none;background:linear-gradient(180deg,rgba(247,245,240,0.02) 0%,rgba(247,245,240,0.2) 50%,rgba(247,245,240,0.85) 100%) !important;}
+  
+  /* Allow clicking/dragging over empty parts of the content container */
+  .hero-content{pointer-events:none;}
+  .hero-content .hero-line-text, .hero-content .hero-title, .hero-content .hero-sub, .hero-content .hero-cta { pointer-events:auto; }
+
   .intro{padding:108px 48px 112px!important;background:var(--white)}
   .tax{padding:132px 48px!important}.insights{padding:120px 48px!important}.cta-contact{padding:140px 48px!important}.footer{padding-top:105px!important}
   .fw-marquee.after-hero-marquee{margin-top:-1px;background:linear-gradient(90deg,var(--o-950),#063C44,var(--o-950));border:0;box-shadow:0 20px 70px rgba(0,37,41,.10)}
@@ -404,7 +421,7 @@
 
 <div class="fw-splash" id="fwSplash" aria-hidden="true">
   <div class="fw-splash-card">
-    <div class="fw-splash-logo-wrap"><img src="images/logo-original.jpg" alt="Folk Williams"></div>
+    <div class="fw-splash-logo-wrap"><img src="../images/logo-original.jpg" alt="Folk Williams"></div>
     <div class="fw-splash-name">Folk Williams<br><em>Financial Management</em></div>
     <div class="fw-splash-sub">Warmth in precision</div>
     <div class="fw-splash-bar"><span></span></div>
@@ -417,7 +434,7 @@
    ============================================ -->
 <nav class="nav" id="nav">
   <a href="index.html" class="nav-logo">
-    <img src="images/logo-original.jpg" alt="Folk Williams Financial Management">
+    <img src="../images/logo-original.jpg" alt="Folk Williams Financial Management">
     <span>Folk Williams</span>
   </a>
   <ul class="nav-links">
@@ -440,10 +457,11 @@
 </div>
 
 <!-- ============================================
-   HERO — LINE / FINANCIAL MANAGEMENT, INC. / LINE
+   HERO — 360 VIEWER
    ============================================ -->
 <section class="hero" id="hero">
-  <div class="hero-bg" id="heroBg"></div>
+  <!-- This container holds the Three.js canvas -->
+  <div class="hero-bg" id="pano-container"></div>
   <div class="hero-grain"></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
@@ -493,7 +511,7 @@
         <h3 class="timeline-title">A Partnership <em>Forms</em></h3>
         <p class="timeline-body">Walter welcomed business partners Dave Childress and Judge Davis into the firm. Dave brought his tax knowledge and existing clients, while Judge focused on business development and attracting new clients. Together they positioned the company as the top Tax Advisors for many Angelenos.</p>
         <div class="timeline-visual">
-          <img src="images/editorial-still.jpg" alt="Heritage partnership" loading="lazy">
+          <img src="../images/editorial-still.jpg" alt="Heritage partnership" loading="lazy">
         </div>
       </div>
       <div class="timeline-item">
@@ -543,7 +561,7 @@
    ============================================ -->
 <section class="tax" id="tax">
   <div class="tax-bg">
-    <img src="images/editorial-still.jpg" alt="" loading="lazy">
+    <img src="../images/editorial-still.jpg" alt="" loading="lazy">
   </div>
   <div class="tax-content">
     <div>
@@ -577,14 +595,14 @@
       <h3 class="svc-title">Strategic<br><em>Accounting.</em></h3>
       <p class="svc-desc">We specialize in bookkeeping and accounting for a wide array of for-profit and non-profit businesses. We help clients determine the best entity type for their endeavor, and assist in developing successful plans for business operation.</p>
       <a href="accounting.html" class="svc-link">Explore Accounting →</a>
-      <img src="images/hero-architecture.jpg" alt="" class="svc-img" loading="lazy">
+      <img src="../images/hero-architecture.jpg" alt="" class="svc-img" loading="lazy">
     </article>
     <article class="svc-card rv-r">
       <p class="svc-label">High-Touch Advisory</p>
       <h3 class="svc-title">Premium Business<br><em>Management.</em></h3>
       <p class="svc-desc">An exclusive advisory ecosystem for high-profile individuals and high-net-worth families. Multi-stream revenue, equity compensation, and legacy preservation — for athletes, entertainers, and corporate leaders.</p>
       <a href="business-management.html" class="svc-link">Enter the Ecosystem →</a>
-      <img src="images/texture-oceanic.jpg" alt="" class="svc-img" loading="lazy">
+      <img src="../images/texture-oceanic.jpg" alt="" class="svc-img" loading="lazy">
     </article>
   </div>
 </section>
@@ -608,7 +626,7 @@
     </div>
     <div class="pathing-right rv-s">
       <div class="pathing-panel active" data-arc="elite">
-        <img src="images/archetype-elite.jpg" alt="Elite Performers" loading="lazy">
+        <img src="../images/archetype-elite.jpg" alt="Elite Performers" loading="lazy">
         <div class="pathing-desc">
           <h3 class="pathing-desc-title">Elite <em>Performers</em></h3>
           <p class="pathing-desc-body">Athletes, entertainers, and creators managing multi-stream revenue, endorsement complexities, and empire-building transitions across jurisdictions.</p>
@@ -616,7 +634,7 @@
         </div>
       </div>
       <div class="pathing-panel" data-arc="corporate">
-        <img src="images/archetype-corporate.jpg" alt="Corporate Leaders" loading="lazy">
+        <img src="../images/archetype-corporate.jpg" alt="Corporate Leaders" loading="lazy">
         <div class="pathing-desc">
           <h3 class="pathing-desc-title">Corporate <em>Leaders</em></h3>
           <p class="pathing-desc-body">C-Suite executives optimizing equity compensation, RSU vesting schedules, deferred income, and corporate benefit coordination.</p>
@@ -624,7 +642,7 @@
         </div>
       </div>
       <div class="pathing-panel" data-arc="wealth">
-        <img src="images/archetype-wealth.jpg" alt="Wealth Creators" loading="lazy">
+        <img src="../images/archetype-wealth.jpg" alt="Wealth Creators" loading="lazy">
         <div class="pathing-desc">
           <h3 class="pathing-desc-title">Wealth <em>Creators</em></h3>
           <p class="pathing-desc-body">Founders navigating business-to-personal transitions, exit events, liquidity planning, and capital reinvestment architecture.</p>
@@ -632,7 +650,7 @@
         </div>
       </div>
       <div class="pathing-panel" data-arc="legacy">
-        <img src="images/archetype-legacy.jpg" alt="Legacy Planners" loading="lazy">
+        <img src="../images/archetype-legacy.jpg" alt="Legacy Planners" loading="lazy">
         <div class="pathing-desc">
           <h3 class="pathing-desc-title">Legacy <em>Planners</em></h3>
           <p class="pathing-desc-body">Multi-generational families preserving wealth across decades. Trust architecture, stewardship education, and family office dynamics.</p>
@@ -656,7 +674,7 @@
   </div>
   <div class="insights-grid">
     <a href="insights.html" class="insights-feat rv-s">
-      <img src="images/texture-oceanic.jpg" alt="Abstract texture" loading="lazy">
+      <img src="../images/texture-oceanic.jpg" alt="Abstract texture" loading="lazy">
       <div class="insights-feat-overlay">
         <span class="insights-feat-tag">Tax Strategy</span>
         <h3 class="insights-feat-title">The Mid-Year Tax Review: Why July Is Your Strategic Window</h3>
@@ -665,7 +683,7 @@
     </a>
     <div class="insights-side">
       <a href="insights.html" class="insights-item rv-l">
-        <img src="images/hero-architecture.jpg" alt="Architecture" class="insights-item-thumb" loading="lazy">
+        <img src="../images/hero-architecture.jpg" alt="Architecture" class="insights-item-thumb" loading="lazy">
         <div>
           <p class="insights-item-tag">Business</p>
           <h4 class="insights-item-title">Entity Restructuring for the Modern Founder</h4>
@@ -673,7 +691,7 @@
         </div>
       </a>
       <a href="insights.html" class="insights-item rv-l rv-d1">
-        <img src="images/editorial-still.jpg" alt="Still life" class="insights-item-thumb" loading="lazy">
+        <img src="../images/editorial-still.jpg" alt="Still life" class="insights-item-thumb" loading="lazy">
         <div>
           <p class="insights-item-tag">Family Office</p>
           <h4 class="insights-item-title">Stewardship Without Entitlement</h4>
@@ -681,7 +699,7 @@
         </div>
       </a>
       <a href="insights.html" class="insights-item rv-l rv-d2">
-        <img src="images/hero-premium.jpg" alt="Premium" class="insights-item-thumb" loading="lazy">
+        <img src="../images/hero-premium.jpg" alt="Premium" class="insights-item-thumb" loading="lazy">
         <div>
           <p class="insights-item-tag">Wealth</p>
           <h4 class="insights-item-title">The QSBS Checklist: Are You Leaving Gains on the Table?</h4>
@@ -762,7 +780,7 @@
   <div class="footer-ambient"></div>
   <div class="footer-grid">
     <div class="footer-brand">
-      <div class="footer-logo"><img src="images/logo-original.jpg" alt="Folk Williams Financial Management"><span class="footer-logo-text">Folk Williams</span></div>
+      <div class="footer-logo"><img src="../images/logo-original.jpg" alt="Folk Williams Financial Management"><span class="footer-logo-text">Folk Williams</span></div>
       <p class="footer-desc">California-based financial management for individuals, families, growing entities, entertainers, athletes, and high-net-worth households. Warmth in precision. Clarity in every ledger.</p>
       <p class="footer-address"><strong>Folk Williams Financial Management, Inc.</strong><br>14724 Ventura Blvd. Suite 401<br>Sherman Oaks, CA 91403<br>Office: <a href="tel:+18186163226">818.616.3226</a> · <a href="tel:+13239370556">323.937.0556</a><br>Fax: 844.274.1132</p>
       <div class="footer-social" aria-label="Social links">
@@ -816,6 +834,125 @@
     revealEls.forEach(el=>obs.observe(el));
   }
 
+  // --- Three.js 360 Panorama Initialization ---
+  function initThreeJS() {
+    const container = document.getElementById('pano-container');
+    if (!container) return;
+
+    // Scene, Camera, Renderer
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    
+    // Set initial camera view
+    let lon = 170; 
+    let lat = 10;  
+    let phi = 0, theta = 0;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    container.appendChild(renderer.domElement);
+
+    // Create the Sphere
+    const geometry = new THREE.SphereGeometry(500, 60, 40);
+    // Invert the sphere so the texture is on the inside
+    geometry.scale(-1, 1, 1);
+
+    // Load your specific panoramic image 
+    const textureLoader = new THREE.TextureLoader();
+    const texture = textureLoader.load('../images/hero360-panoram.png'); 
+    texture.colorSpace = THREE.SRGBColorSpace; 
+
+    const material = new THREE.MeshBasicMaterial({ map: texture });
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    // Interaction variables
+    let isUserInteracting = false;
+    let onPointerDownMouseX = 0, onPointerDownMouseY = 0;
+    let onPointerDownLon = 0, onPointerDownLat = 0;
+
+    // Target the entire hero section so you can grab OVER the text
+    const heroSection = document.getElementById('hero');
+
+    // Event Listeners for dragging
+    heroSection.addEventListener('mousedown', onPointerDown, false);
+    heroSection.addEventListener('touchstart', onPointerDown, { passive: false });
+    window.addEventListener('resize', onWindowResize, false);
+
+    function onPointerDown(event) {
+      // Do not block dragging if we click the button
+      if(event.target.classList.contains('hero-cta')) return;
+      
+      event.preventDefault(); 
+      isUserInteracting = true;
+      const clientX = event.clientX || event.touches[0].clientX;
+      const clientY = event.clientY || event.touches[0].clientY;
+
+      onPointerDownMouseX = clientX;
+      onPointerDownMouseY = clientY;
+      onPointerDownLon = lon;
+      onPointerDownLat = lat;
+
+      document.addEventListener('mousemove', onPointerMove, false);
+      document.addEventListener('touchmove', onPointerMove, { passive: false });
+      document.addEventListener('mouseup', onPointerUp, false);
+      document.addEventListener('touchend', onPointerUp, false);
+    }
+
+    function onPointerMove(event) {
+      if (isUserInteracting === true) {
+        const clientX = event.clientX || event.touches[0].clientX;
+        const clientY = event.clientY || event.touches[0].clientY;
+        lon = (onPointerDownMouseX - clientX) * 0.1 + onPointerDownLon;
+        lat = (clientY - onPointerDownMouseY) * 0.1 + onPointerDownLat;
+      }
+    }
+
+    function onPointerUp() {
+      isUserInteracting = false;
+      document.removeEventListener('mousemove', onPointerMove);
+      document.removeEventListener('touchmove', onPointerMove);
+      document.removeEventListener('mouseup', onPointerUp);
+      document.removeEventListener('touchend', onPointerUp);
+    }
+
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    // Animation Loop
+    function animate() {
+      requestAnimationFrame(animate);
+
+      // Slow auto-rotation when user isn't clicking
+      if (!isUserInteracting) {
+        lon += 0.05;
+      }
+
+      // Restrict looking too far up or down
+      lat = Math.max(-85, Math.min(85, lat));
+      phi = THREE.MathUtils.degToRad(90 - lat);
+      theta = THREE.MathUtils.degToRad(lon);
+
+      camera.target = new THREE.Vector3(
+        500 * Math.sin(phi) * Math.cos(theta),
+        500 * Math.cos(phi),
+        500 * Math.sin(phi) * Math.sin(theta)
+      );
+
+      camera.lookAt(camera.target);
+      renderer.render(scene, camera);
+    }
+
+    animate();
+  }
+
+  // Run the 360 viewer on load
+  window.addEventListener('load', initThreeJS);
+
   const nav=document.getElementById('nav');
   const hero=document.getElementById('hero');
   const updateNav=()=>{
@@ -825,9 +962,6 @@
   window.addEventListener('scroll',updateNav,{passive:true});
   window.addEventListener('resize',updateNav,{passive:true});
   updateNav();
-
-  const hBg=document.getElementById('heroBg');
-  window.addEventListener('scroll',()=>{if(hBg){const y=window.scrollY*0.25;hBg.style.transform='translateY('+y+'px) scale(1.1)'}},{passive:true});
 
   const toggle=document.getElementById('navToggle');
   const overlay=document.getElementById('mobOverlay');
